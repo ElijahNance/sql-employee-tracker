@@ -95,6 +95,29 @@ const addDepartment = () => {
         });
 };
 
+const addRole = async () => {
+    const [departments] = await selectAllNameAndValue('department', 'name', 'id'); 
+    prompt([
+        {
+            name: 'title',
+            message: "Enter New Role Name"
+        },
+        {
+            name: 'salary',
+            message: "Enter New Role Salary"
+        },
+        {
+            type: 'rawlist',
+            name: 'department_id',
+            message: "Select Department For The Role",
+            choices: departments
+        }
+    ])
+        .then((answers) => {
+            insert('role', answers)
+        });
+};
+
 const chooseOption = (type) => {
     switch (type) {
         case 'VIEW ALL EMPLOYEES': {
@@ -118,6 +141,10 @@ const chooseOption = (type) => {
             addDepartment();
             break;
         }
+        case 'ADD ROLE': {
+            addRole();
+            break;
+        }
     }
 };
 
@@ -130,7 +157,8 @@ const init = () => {
             'VIEW ALL DEPARTMENTS',
             'VIEW ALL ROLES',
             'ADD EMPLOYEE',
-            'ADD DEPARTMENT'
+            'ADD DEPARTMENT',
+            'ADD ROLE',
         ],
         name: 'type',
     })
