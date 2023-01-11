@@ -8,6 +8,7 @@ const db = mysql.createConnection({
     database: "employee_db",
 });
 
+// Shows all the data within the table selected
 const selectAll = async (table, display) => {
     const results = await db.promise().query('SELECT * FROM ' + table);
     if (display) {
@@ -17,6 +18,7 @@ const selectAll = async (table, display) => {
     return results;
 };
 
+// Inserts data into table
 const insert = (table, data) => {
     db.query('INSERT INTO ?? SET ?', [table, data], (err) => {
         if (!err) 
@@ -26,8 +28,8 @@ const insert = (table, data) => {
     });
 };
 
+// Updates employee table data
 const updateEmployee = (table, role, id) => {
-    console.log(table, role, id);
     return db.query('UPDATE ?? SET role_id=? WHERE id=?', [table, role, id], (err) => {
         if (!err) 
         {console.log('\nSuccesfully created!\n');
@@ -36,11 +38,13 @@ const updateEmployee = (table, role, id) => {
     });
 };
 
+// Selects specefic data from selected table
 const selectAllNameAndValue = (table, name, value) => {
     console.log(table , name, value);
     return db.promise().query('SELECT ?? AS name, ?? AS value FROM ??', [name, value, table]);
 };
 
+// Joins data to create manager info
 const selectAllEmployeeDetails = async () => {
     const statement = `
         SELECT 
@@ -62,8 +66,10 @@ const selectAllEmployeeDetails = async () => {
         `
     const [employees] = await db.promise().query(statement);
     console.table(employees);
+    init();
 };
 
+// Add employee prompt questions
 const addEmployee = async () => {
     const [roles] = await selectAllNameAndValue('role', 'title', 'id');
     const [managers] = await selectAllNameAndValue('employee', 'last_name', 'id');
@@ -94,6 +100,7 @@ const addEmployee = async () => {
         });
 };
 
+// Add department prompt questions
 const addDepartment = () => {
     prompt([
         {
@@ -106,6 +113,7 @@ const addDepartment = () => {
         });
 };
 
+// Add role prompt questions
 const addRole = async () => {
     const [departments] = await selectAllNameAndValue('department', 'name', 'id'); 
     prompt([
@@ -129,6 +137,7 @@ const addRole = async () => {
         });
 };
 
+// Update role prompt questions
 const updateRole = async () => {
     const [employees] = await selectAllNameAndValue('employee', 'last_name', 'id');
     const [roles] = await selectAllNameAndValue('role', 'title', 'id');
@@ -147,11 +156,11 @@ const updateRole = async () => {
         }
     ])
         .then((answers) => {
-            //console.log(answers);
             updateEmployee('employee', answers.role_id, answers.id)
         })
 }
 
+// Switch/case to select option in app
 const chooseOption = (type) => {
     switch (type) {
         case 'VIEW ALL EMPLOYEES': {
@@ -186,6 +195,7 @@ const chooseOption = (type) => {
     }
 };
 
+// Initializer function
 const init = () => {
     prompt({
         type: 'rawlist',
