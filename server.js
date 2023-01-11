@@ -26,7 +26,18 @@ const insert = (table, data) => {
     });
 };
 
+const updateEmployee = (table, role, id) => {
+    console.log(table, role, id);
+    return db.query('UPDATE ?? SET role_id=? WHERE id=?', [table, role, id], (err) => {
+        if (!err) 
+        {console.log('\nSuccesfully created!\n');
+    } console.log(err);
+        init();
+    });
+};
+
 const selectAllNameAndValue = (table, name, value) => {
+    console.log(table , name, value);
     return db.promise().query('SELECT ?? AS name, ?? AS value FROM ??', [name, value, table]);
 };
 
@@ -118,6 +129,29 @@ const addRole = async () => {
         });
 };
 
+const updateRole = async () => {
+    const [employees] = await selectAllNameAndValue('employee', 'last_name', 'id');
+    const [roles] = await selectAllNameAndValue('role', 'title', 'id');
+    prompt([
+        {
+            type: 'rawlist',
+            name: 'id',
+            message: "Select Employee to update Role",
+            choices: employees
+        },
+        {
+            type: 'rawlist',
+            name: 'role_id',
+            message: "Select New Role for employee",
+            choices: roles
+        }
+    ])
+        .then((answers) => {
+            //console.log(answers);
+            updateEmployee('employee', answers.role_id, answers.id)
+        })
+}
+
 const chooseOption = (type) => {
     switch (type) {
         case 'VIEW ALL EMPLOYEES': {
@@ -145,6 +179,10 @@ const chooseOption = (type) => {
             addRole();
             break;
         }
+        case 'UPDATE EMPLOYEE ROLE': {
+            updateRole();
+            break;
+        }
     }
 };
 
@@ -159,6 +197,7 @@ const init = () => {
             'ADD EMPLOYEE',
             'ADD DEPARTMENT',
             'ADD ROLE',
+            'UPDATE EMPLOYEE ROLE',
         ],
         name: 'type',
     })
