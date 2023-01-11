@@ -19,7 +19,9 @@ const selectAll = async (table, display) => {
 
 const insert = (table, data) => {
     db.query('INSERT INTO ?? SET ?', [table, data], (err) => {
-        if (!err) console.log('\nSuccesfully created employee!\n');
+        if (!err) 
+        {console.log('\nSuccesfully created!\n');
+    } console.log(err);
         init();
     });
 };
@@ -84,12 +86,12 @@ const addEmployee = async () => {
 const addDepartment = () => {
     prompt([
         {
-            name: 'department_id',
+            name: 'name',
             message: "Enter New Department Name"
         }
     ])
-        .then((answer) => {
-            insert('department', answer)
+        .then((answers) => {
+            insert('department', answers)
         });
 };
 
